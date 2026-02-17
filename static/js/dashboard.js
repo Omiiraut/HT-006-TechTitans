@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingModal = document.getElementById('loadingModal');
     const loadingModalInstance = loadingModal ? new bootstrap.Modal(loadingModal) : null;
 
-    // Sidebar BMI calculator
+    // (Legacy) Sidebar BMI calculator – elements may not exist in new UI, so checks stay guarded below
     const sidebarHeight = document.getElementById('sidebarHeight');
     const sidebarWeight = document.getElementById('sidebarWeight');
     const calcBmiBtn = document.getElementById('calcBmiBtn');
@@ -203,6 +203,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (text) sendSymptoms(text);
         });
     }
+
+    // Quick symptom chips
+    const quickSymptomButtons = document.querySelectorAll('.quick-symptom-btn');
+    quickSymptomButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.getAttribute('data-symptom') || btn.textContent.trim();
+            if (text) {
+                sendSymptoms(text);
+            }
+        });
+    });
 
     // BMI Calculator (sidebar)
     function calcBmi(height, weight) {
