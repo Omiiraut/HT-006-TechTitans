@@ -1,0 +1,162 @@
+/* AI Health Assistant - Medical Theme Styles */
+:root {
+    --primary-blue: #0d6efd;
+    --hospital-blue: #0066cc;
+    --light-blue: #e7f1ff;
+    --clean-white: #ffffff;
+    --soft-gray: #f8f9fa;
+    --danger-red: #dc3545;
+    --success-green: #198754;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--soft-gray);
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Landing Page */
+.landing-page .landing-hero {
+    background: linear-gradient(135deg, #0066cc 0%, #004494 50%, #002d66 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+.landing-page .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.landing-page .disclaimer-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+}
+
+.landing-page .hero-illustration i {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.75; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Auth Pages */
+.auth-page .card {
+    border-radius: 16px;
+}
+
+.auth-page .disclaimer-alert {
+    background: var(--light-blue);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+/* Dashboard */
+.dashboard-page {
+    min-height: calc(100vh - 56px);
+}
+
+.chat-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.chat-card .disclaimer-badge {
+    opacity: 0.9;
+    font-size: 0.8rem;
+}
+
+/* Chat Bubbles */
+.chat-message {
+    max-width: 85%;
+    margin-bottom: 1rem;
+}
+
+.chat-message.user {
+    margin-left: auto;
+}
+
+.chat-message .bubble {
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    line-height: 1.5;
+}
+
+.chat-message.user .bubble {
+    background: var(--primary-blue);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-message.assistant .bubble {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-message.assistant.emergency .bubble {
+    border-color: var(--danger-red);
+    background: #fff5f5;
+}
+
+.chat-message .bubble.emergency-highlight {
+    background: #ffebee !important;
+    border: 2px solid var(--danger-red) !important;
+    color: #b71c1c;
+}
+
+.chat-message .timestamp {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Emergency styling */
+.emergency-text {
+    color: var(--danger-red);
+    font-weight: 600;
+}
+
+.health-tips li {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.health-tips li:last-child {
+    border-bottom: none;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-weight: 600;
+}
+
+/* Loading spinner */
+#loadingModal .spinner-border {
+    border-width: 0.25em;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .chat-message {
+        max-width: 95%;
+    }
+    
+    .landing-page h1.display-4 {
+        font-size: 2rem;
+    }
+}

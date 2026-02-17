@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Health Profile - AI Health Assistant{% endblock %}
+{% block main_class %}py-4{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-person-vcard me-2"></i>Your Health Profile</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted">This information helps us provide personalized health insights. All data is stored securely.</p>
+
+                    <form method="POST" action="{{ url_for('main.profile') }}" id="profileForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" name="name" class="form-control" 
+                                       value="{{ profile.name if profile else '' }}" required 
+                                       placeholder="Your name">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Age *</label>
+                                <input type="number" name="age" class="form-control" min="1" max="120"
+                                       value="{{ profile.age if profile and profile.age else '' }}" 
+                                       placeholder="Years">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Gender</label>
+                                <select name="gender" class="form-select">
+                                    <option value="">Select</option>
+                                    <option value="Male" {{ 'selected' if profile and profile.gender == 'Male' else '' }}>Male</option>
+                                    <option value="Female" {{ 'selected' if profile and profile.gender == 'Female' else '' }}>Female</option>
+                                    <option value="Other" {{ 'selected' if profile and profile.gender == 'Other' else '' }}>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Height (cm)</label>
+                                <input type="number" name="height_cm" id="heightInput" class="form-control" 
+                                       step="0.1" min="50" max="300"
+                                       value="{{ profile.height_cm if profile and profile.height_cm else '' }}"
+                                       placeholder="e.g. 170">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" name="weight_kg" id="weightInput" class="form-control" 
+                                       step="0.1" min="20" max="300"
+                                       value="{{ profile.weight_kg if profile and profile.weight_kg else '' }}"
+                                       placeholder="e.g. 70">
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label mb-0">BMI</label>
+                                    <span id="bmiResult" class="badge fs-6">—</span>
+                                </div>
+                                <div id="bmiCategory" class="small text-muted">Enter height and weight to calculate</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Existing Conditions</label>
+                                <input type="text" name="existing_conditions" class="form-control" 
+                                       value="{{ profile.existing_conditions if profile else '' }}"
+                                       placeholder="e.g. Diabetes, High BP, Asthma (comma separated)">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Allergies</label>
+                                <input type="text" name="allergies" class="form-control" 
+                                       value="{{ profile.allergies if profile else '' }}"
+                                       placeholder="e.g. Penicillin, Pollen, Nuts">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Smoking Habit</label>
+                                <select name="smoking_habit" class="form-select">
+                                    <option value="">Select</option>
+                                    <option value="Non-smoker" {{ 'selected' if profile and profile.smoking_habit == 'Non-smoker' else '' }}>Non-smoker</option>
+                                    <option value="Occasional" {{ 'selected' if profile and profile.smoking_habit == 'Occasional' else '' }}>Occasional</option>
+                                    <option value="Regular" {{ 'selected' if profile and profile.smoking_habit == 'Regular' else '' }}>Regular</option>
+                                    <option value="Former smoker" {{ 'selected' if profile and profile.smoking_habit == 'Former smoker' else '' }}>Former smoker</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Alcohol Habit</label>
+                                <select name="alcohol_habit" class="form-select">
+                                    <option value="">Select</option>
+                                    <option value="Non-drinker" {{ 'selected' if profile and profile.alcohol_habit == 'Non-drinker' else '' }}>Non-drinker</option>
+                                    <option value="Occasional" {{ 'selected' if profile and profile.alcohol_habit == 'Occasional' else '' }}>Occasional</option>
+                                    <option value="Moderate" {{ 'selected' if profile and profile.alcohol_habit == 'Moderate' else '' }}>Moderate</option>
+                                    <option value="Heavy" {{ 'selected' if profile and profile.alcohol_habit == 'Heavy' else '' }}>Heavy</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check2-circle me-2"></i>Save Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const heightInput = document.getElementById('heightInput');
+    const weightInput = document.getElementById('weightInput');
+    const bmiResult = document.getElementById('bmiResult');
+    const bmiCategory = document.getElementById('bmiCategory');
+
+    function updateBMI() {
+        const height = parseFloat(heightInput.value) / 100;
+        const weight = parseFloat(weightInput.value);
+        if (height > 0 && weight > 0) {
+            const bmi = (weight / (height * height)).toFixed(1);
+            bmiResult.textContent = bmi;
+            bmiResult.className = 'badge fs-6 bg-secondary';
+            let category = '';
+            let color = 'secondary';
+            if (bmi < 18.5) { category = 'Underweight'; color = 'info'; }
+            else if (bmi < 25) { category = 'Normal'; color = 'success'; }
+            else if (bmi < 30) { category = 'Overweight'; color = 'warning'; }
+            else { category = 'Obese'; color = 'danger'; }
+            bmiResult.className = 'badge fs-6 bg-' + color;
+            bmiCategory.textContent = category;
+        } else {
+            bmiResult.textContent = '—';
+            bmiResult.className = 'badge fs-6';
+            bmiCategory.textContent = 'Enter height and weight to calculate';
+        }
+    }
+    heightInput?.addEventListener('input', updateBMI);
+    weightInput?.addEventListener('input', updateBMI);
+    updateBMI();
+});
+</script>
+{% endblock %}
