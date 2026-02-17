@@ -3,100 +3,115 @@
 {% block main_class %}dashboard-page{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-3">
-    <div class="row">
-        <div class="col-lg-4 col-xl-3 mb-4 d-none d-lg-block">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-primary text-white py-2">
-                    <h6 class="mb-0"><i class="bi bi-calculator me-2"></i>BMI Calculator</h6>
-                </div>
-                <div class="card-body">
-                    <div class="mb-2">
-                        <label class="form-label small">Height (cm)</label>
-                        <input type="number" id="sidebarHeight" class="form-control form-control-sm" 
-                               value="{{ profile.height_cm if profile and profile.height_cm else '' }}"
-                               placeholder="170" min="50" max="300" step="0.1">
+<div class="dashboard-hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="dashboard-hero-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p class="hello-label mb-1">Hello,</p>
+                            <h2 class="hero-name mb-1">
+                                {{ profile.name if profile and profile.name else session.username if session.username else 'Friend' }}
+                            </h2>
+                            <p class="hero-subtitle mb-0">How are you feeling today?</p>
+                        </div>
+                        <button class="btn btn-sm btn-light rounded-circle shadow-sm d-none d-md-inline-flex" type="button" title="Profile"
+                                onclick="window.location.href='{{ url_for('main.profile') }}'">
+                            <i class="bi bi-person"></i>
+                        </button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small">Weight (kg)</label>
-                        <input type="number" id="sidebarWeight" class="form-control form-control-sm"
-                               value="{{ profile.weight_kg if profile and profile.weight_kg else '' }}"
-                               placeholder="70" min="20" max="300" step="0.1">
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-primary w-100 mb-2" id="calcBmiBtn">Calculate BMI</button>
-                    <div id="sidebarBmiResult" class="small text-muted">Enter values and calculate</div>
-                </div>
-                <div class="card-header bg-light py-2">
-                    <h6 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Health Tips</h6>
-                </div>
-                <div class="card-body pt-2">
-                    <ul class="small mb-0 list-unstyled health-tips">
-                        <li><i class="bi bi-droplet text-primary me-2"></i>Stay hydrated—aim for 8 glasses of water daily</li>
-                        <li><i class="bi bi-moon text-primary me-2"></i>Get 7-8 hours of quality sleep</li>
-                        <li><i class="bi bi-bicycle text-primary me-2"></i>30 min of moderate exercise most days</li>
-                        <li><i class="bi bi-emoji-smile text-primary me-2"></i>Manage stress with breaks and relaxation</li>
-                        <li><i class="bi bi-apple text-primary me-2"></i>Eat a balanced diet with fruits and vegetables</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-8 col-xl-9">
-            <!-- Mobile BMI Calculator -->
-            <div class="card border-0 shadow-sm mb-3 d-lg-none">
-                <div class="card-header py-2" data-bs-toggle="collapse" data-bs-target="#mobileBmi" style="cursor:pointer">
-                    <i class="bi bi-calculator me-2"></i>BMI Calculator
-                </div>
-                <div class="collapse" id="mobileBmi">
-                    <div class="card-body">
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <input type="number" id="mobileHeight" class="form-control form-control-sm" placeholder="Height (cm)">
+
+                    <div class="symptom-card shadow-sm">
+                        <div class="symptom-card-header d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="icon-pill">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+                                <div>
+                                    <p class="symptom-label mb-0">Describe your symptoms</p>
+                                    <small class="text-muted">Tell me what you're experiencing...</small>
+                                </div>
                             </div>
-                            <div class="col-6">
-                                <input type="number" id="mobileWeight" class="form-control form-control-sm" placeholder="Weight (kg)">
+                            <span class="badge rounded-pill bg-light text-secondary d-none d-md-inline-flex">
+                                <i class="bi bi-shield-exclamation me-1"></i> Guidance only
+                            </span>
+                        </div>
+
+                        <div class="symptom-input-wrapper">
+                            <div id="chatMessages" class="chat-messages-modern">
+                                <div class="welcome-message text-center text-muted py-4">
+                                    <i class="bi bi-chat-quote display-5 d-block mb-2"></i>
+                                    <p class="mb-0">Describe your symptoms in natural language. I'll analyze and provide preliminary guidance.</p>
+                                    <p class="small mt-2">Example: "I've had a headache and fever for 2 days"</p>
+                                </div>
                             </div>
-                            <div class="col-12">
-                                <button type="button" class="btn btn-sm btn-outline-primary w-100" id="mobileCalcBmi">Calculate</button>
-                                <div id="mobileBmiResult" class="small mt-2 text-muted"></div>
+
+                            <form id="chatForm" class="symptom-form mt-3">
+                                <div class="input-group modern-input-group">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="bi bi-chat-dots text-primary"></i>
+                                    </span>
+                                    <input type="text"
+                                           id="symptomInput"
+                                           class="form-control border-start-0"
+                                           placeholder="Tell me what you're experiencing..."
+                                           autocomplete="off" />
+                                    <button type="submit" class="btn btn-primary modern-submit-btn" id="sendBtn">
+                                        <i class="bi bi-send-fill me-1"></i>
+                                        <span class="d-none d-sm-inline">Submit</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="quick-symptoms mt-3">
+                            <p class="small text-muted mb-2">Quick symptoms</p>
+                            <div class="quick-chip-row">
+                                <button type="button" class="btn quick-symptom-btn"
+                                        data-symptom="I have a fever and feel very tired.">
+                                    Fever
+                                </button>
+                                <button type="button" class="btn quick-symptom-btn"
+                                        data-symptom="I have a strong headache that started today.">
+                                    Headache
+                                </button>
+                                <button type="button" class="btn quick-symptom-btn"
+                                        data-symptom="I have stomach pain and feel nauseous.">
+                                    Stomach pain
+                                </button>
+                                <button type="button" class="btn quick-symptom-btn"
+                                        data-symptom="I have a cough and sore throat.">
+                                    Cough
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="card border-0 shadow-sm chat-card">
-                <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between py-3">
-                    <h5 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Symptom Analyzer</h5>
-                    <div class="disclaimer-badge">
-                        <small><i class="bi bi-shield-exclamation me-1"></i>For guidance only—not medical advice</small>
+
+                    <div id="emergencyBanner" class="alert alert-danger modern-emergency mt-3 d-none" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Emergency:</strong> If you're experiencing a life-threatening situation, call emergency services (911/112) immediately.
                     </div>
                 </div>
-                <div class="card-body p-0 d-flex flex-column" style="min-height: 450px;">
-                    <div id="chatMessages" class="flex-grow-1 overflow-auto p-4" style="max-height: 350px;">
-                        <div class="welcome-message text-center text-muted py-4">
-                            <i class="bi bi-chat-quote display-4 d-block mb-2"></i>
-                            <p class="mb-0">Describe your symptoms in natural language. I'll analyze and provide preliminary guidance.</p>
-                            <p class="small mt-2">Example: "I've had a headache and fever for 2 days"</p>
-                            <p class="small mt-3 text-primary"><i class="bi bi-chat-dots-fill me-1"></i>Or use the AI chat widget in the bottom-right corner for instant assistance.</p>
-                        </div>
-                    </div>
-                    <div class="p-3 border-top bg-light">
-                        <form id="chatForm" class="d-flex gap-2">
-                            <input type="text" id="symptomInput" class="form-control" 
-                                   placeholder="Describe how you're feeling..." autocomplete="off">
-                            <button type="submit" class="btn btn-primary px-4" id="sendBtn">
-                                <i class="bi bi-send-fill"></i> Send
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div id="emergencyBanner" class="alert alert-danger mt-3 d-none" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Emergency:</strong> If you're experiencing a life-threatening situation, call emergency services (911/112) immediately.
             </div>
         </div>
     </div>
 </div>
+
+<nav class="mobile-bottom-nav d-md-none">
+    <button type="button" class="nav-item active">
+        <i class="bi bi-house-door"></i>
+        <span>Home</span>
+    </button>
+    <button type="button" class="nav-item" onclick="window.location.href='{{ url_for('main.dashboard') }}'">
+        <i class="bi bi-clock-history"></i>
+        <span>History</span>
+    </button>
+    <button type="button" class="nav-item" onclick="window.location.href='{{ url_for('main.profile') }}'">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+    </button>
+</nav>
 
 <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm">
