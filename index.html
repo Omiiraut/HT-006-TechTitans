@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dr. Ava – AI Personal Doctor</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app" class="app-container">
+    
+    <!-- Landing Screen -->
+    <div id="landing-screen" class="screen active">
+      <div class="landing-content">
+        <div class="logo-container">
+          <div class="logo">
+            <svg class="logo-cross" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+              <path d="M12 2v20M2 12h20"/>
+            </svg>
+            <svg class="logo-brain" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="2">
+              <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+              <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+            </svg>
+          </div>
+        </div>
+        <h1 class="app-title">Dr. Ava</h1>
+        <p class="app-tagline">Your AI-powered Personal Health Assistant</p>
+        <div class="cta-buttons">
+          <button class="btn btn-primary" onclick="navigateTo('onboarding')">Get Started</button>
+          <button class="btn btn-outline" onclick="navigateTo('dashboard')">Login</button>
+        </div>
+        <p class="disclaimer">
+          Not a substitute for professional medical advice.<br>
+          Always consult with a healthcare provider.
+        </p>
+      </div>
+    </div>
+
+   
