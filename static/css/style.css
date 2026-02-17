@@ -28,9 +28,11 @@ main {
 
 /* Landing Page */
 .landing-page .landing-hero {
-    background: linear-gradient(135deg, #0066cc 0%, #004494 50%, #002d66 100%);
+    background: radial-gradient(circle at top left, #3a8dff 0%, #0052cc 40%, #001f4d 100%);
     min-height: 100vh;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .landing-page .hero-overlay {
@@ -44,15 +46,41 @@ main {
 }
 
 .landing-page .disclaimer-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
+    background: rgba(11, 25, 51, 0.65);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    padding: 1.1rem 1.4rem;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }
 
 .landing-page .hero-illustration i {
     animation: pulse 2s ease-in-out infinite;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.landing-page .display-4 {
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.landing-page .lead {
+    max-width: 32rem;
+    font-size: 1.05rem;
+    opacity: 0.95;
+}
+
+.landing-page .btn.btn-primary.btn-lg {
+    border-radius: 999px;
+    padding-inline: 1.75rem;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.landing-page .btn.btn-outline-light.btn-lg {
+    border-radius: 999px;
+    padding-inline: 1.75rem;
+    border-width: 2px;
 }
 
 @keyframes pulse {
@@ -74,22 +102,180 @@ main {
 /* Dashboard */
 .dashboard-page {
     min-height: calc(100vh - 56px);
+    background: linear-gradient(to bottom, #f3f6ff 0%, #f8f9fb 40%, #ffffff 100%);
 }
 
-.chat-card {
-    border-radius: 12px;
+/* Modern dashboard hero */
+.dashboard-hero-section {
+    padding: 2.5rem 0 6rem;
+}
+
+.dashboard-hero-card {
+    background: linear-gradient(145deg, #1f69ff 0%, #0044cc 60%, #002d72 100%);
+    border-radius: 28px;
+    padding: 1.75rem 1.75rem 1.25rem;
+    color: #fff;
+    position: relative;
     overflow: hidden;
+    box-shadow: 0 18px 40px rgba(13, 110, 253, 0.35);
 }
 
-.chat-card .disclaimer-badge {
+.dashboard-hero-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.35), transparent 55%),
+        radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.15), transparent 55%);
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.dashboard-hero-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hello-label {
+    font-size: 0.9rem;
     opacity: 0.9;
-    font-size: 0.8rem;
+}
+
+.hero-name {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.hero-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.92;
+}
+
+.symptom-card {
+    margin-top: 1.5rem;
+    background: #eeebeb;
+    border-radius: 22px;
+    padding: 1.5rem 1.25rem 1.25rem;
+}
+
+.symptom-card-header .icon-pill {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f6f6f7;
+    color: #0d6efd;
+}
+
+.symptom-label {
+    font-weight: 600;
+    color: #1b2840;
+}
+
+.symptom-input-wrapper {
+    margin-top: 0.75rem;
+}
+
+.chat-messages-modern {
+    max-height: 260px;
+    min-height: 140px;
+    overflow-y: auto;
+    padding: 0.75rem 0.75rem 0.5rem;
+    background-color: #f5f6fb;
+    border-radius: 18px;
+}
+
+.modern-input-group .form-control {
+    border-radius: 999px;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.modern-input-group .input-group-text {
+    border-radius: 999px 0 0 999px;
+}
+
+.modern-input-group .modern-submit-btn {
+    border-radius: 999px;
+    padding-inline: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.quick-symptoms {
+    border-top: 1px dashed #e1e5f5;
+    padding-top: 0.75rem;
+}
+
+.quick-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.quick-symptom-btn {
+    border-radius: 999px;
+    background: #f3f6ff;
+    border: none;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+    color: #1b2840;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.quick-symptom-btn:hover {
+    background: #e1ebff;
+}
+
+.modern-emergency {
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    background-color: #ffe9e9;
+    border-color: #ffb3b3;
+    font-size: 0.9rem;
+}
+
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #e1e4f0;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.35rem 0.75rem 0.6rem;
+    z-index: 1030;
+}
+
+.mobile-bottom-nav .nav-item {
+    flex: 1;
+    border: none;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #6c757d;
+    gap: 0.15rem;
+}
+
+.mobile-bottom-nav .nav-item i {
+    font-size: 1.1rem;
+}
+
+.mobile-bottom-nav .nav-item.active {
+    color: #0d6efd;
 }
 
 /* Chat Bubbles */
 .chat-message {
     max-width: 85%;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .chat-message.user {
@@ -97,14 +283,18 @@ main {
 }
 
 .chat-message .bubble {
-    padding: 1rem 1.25rem;
-    border-radius: 18px;
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
     line-height: 1.5;
+}
+
+.chat-messages-modern .chat-message:first-child {
+    margin-top: 0.25rem;
 }
 
 .chat-message.user .bubble {
     background: var(--primary-blue);
-    color: white;
+    color: rgb(12, 12, 12);
     border-bottom-right-radius: 4px;
 }
 
@@ -112,11 +302,12 @@ main {
     background: white;
     border: 1px solid #e9ecef;
     border-bottom-left-radius: 4px;
+    color: #000000;
 }
 
 .chat-message.assistant.emergency .bubble {
     border-color: var(--danger-red);
-    background: #fff5f5;
+    background: #040404;
 }
 
 .chat-message .bubble.emergency-highlight {
@@ -139,7 +330,7 @@ main {
 
 .health-tips li {
     padding: 0.35rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #070707;
 }
 
 .health-tips li:last-child {
