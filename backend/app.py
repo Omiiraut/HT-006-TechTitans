@@ -2,16 +2,14 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
-import google.generativeai as genai
 from backend.database import init_db
-
-load_dotenv()
-genai.configure(api_key=os.getenv('GEMINI_API_KEY', '').strip())
 
 
 def create_app():
     """Application factory."""
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Load .env from project root regardless of current working directory
+    load_dotenv(dotenv_path=os.path.join(base_dir, ".env"), override=False)
     app = Flask(__name__,
                 template_folder=os.path.join(base_dir, 'templates'),
                 static_folder=os.path.join(base_dir, 'static'))

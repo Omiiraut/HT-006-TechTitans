@@ -149,10 +149,36 @@ def dashboard():
 
 def _is_emergency(response_text: str) -> bool:
     """Check if response contains high-risk/emergency indicators."""
-    return any(term in response_text.lower() for term in [
-        'emergency', 'urgent', 'seek immediate', 'call 911', 'call ambulance',
-        'go to the emergency', 'high risk', 'life-threatening'
-    ])
+    text = (response_text or "").lower()
+
+    # Strong explicit signals
+    if any(term in text for term in [
+        "call 911",
+        "call emergency",
+        "call an ambulance",
+        "go to the emergency",
+        "seek immediate medical attention",
+        "life-threatening",
+    ]):
+        return True
+
+    # Structured outputs: detect "Risk Level: High" or "Doctor Consultation: Urgent"
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith("risk level"):
+            if "high" in line:
+                return True
+        if line.startswith("doctor consultation") or line.startswith("doctor needed"):
+            if "urgent" in line:
+                return True
+        if line.startswith("emergency warning"):
+            # Don't trigger just because the section exists.
+            parts = line.split(":", 1)
+            warning = (parts[1] if len(parts) == 2 else "").strip()
+            if warning and warning not in {"none", "no", "n/a", "na", "not applicable", "-"}:
+                return True
+
+    return False
 
 
 @api_bp.route('/analyze', methods=['POST'])
@@ -174,7 +200,9 @@ def analyze():
 
     config_err = get_config_error()
     if config_err:
-        return jsonify({'error': config_err}), 503
+        return jsonify({
+            'error': config_err
+        }), 503
 
     profile_data = get_profile(user_id)
     profile_dict = dict(profile_data) if profile_data else None
@@ -205,7 +233,9 @@ def analyze_stream():
 
     config_err = get_config_error()
     if config_err:
-        return jsonify({'error': config_err}), 503
+        return jsonify({
+            'error': config_err
+        }), 503
 
     profile_data = get_profile(user_id)
     profile_dict = dict(profile_data) if profile_data else None
@@ -215,9 +245,8 @@ def analyze_stream():
         try:
             for chunk in analyze_symptoms_stream(symptoms, profile_dict):
                 full_text.append(chunk)
-                for line in chunk.split('\n'):
-                    yield f"data: {line}\n"
-                yield "\n"
+                # Send JSON SSE events so the frontend can append without adding extra newlines.
+                yield f"data: {json.dumps({'delta': chunk})}\n\n"
         finally:
             done = json.dumps({
                 "done": True,

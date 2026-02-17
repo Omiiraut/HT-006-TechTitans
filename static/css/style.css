@@ -18,6 +18,12 @@ body {
     background-color: var(--soft-gray);
     color: #333;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
 }
 
 /* Landing Page */

@@ -90,13 +90,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatResponse(text) {
+        // Remove common markdown artifacts the model might emit
+        const cleaned = (text || '').replace(/\*\*/g, '');
         // Convert newlines to <br>
-        let html = escapeHtml(text).replace(/\n/g, '<br>');
+        let html = escapeHtml(cleaned).replace(/\n/g, '<br>');
         // Bold common section headers
         const sections = ['Possible Condition', 'Risk Level', 'Emergency Warning', 'Self-Care Advice', 'Doctor Consultation'];
         sections.forEach(s => {
-            const regex = new RegExp('(' + s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')[:\\s]', 'gi');
-            html = html.replace(regex, '<strong>$1:</strong> ');
+            const escaped = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp('(^|<br>)\\s*(' + escaped + ')\\s*:?\\s*', 'gi');
+            html = html.replace(regex, '$1<strong>$2:</strong> ');
         });
         return html;
     }
@@ -115,11 +118,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (loadingModalInstance) loadingModalInstance.show();
 
+        const controller = new AbortController();
+        const timeoutMs = parseInt(document.documentElement.dataset.aiTimeoutMs || '30000', 10);
+        const timeoutId = setTimeout(() => controller.abort(), Number.isFinite(timeoutMs) ? timeoutMs : 30000);
+
         try {
             const response = await fetch('/api/analyze/stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ symptoms: symptoms }),
+                signal: controller.signal,
             });
 
             if (!response.ok) {
@@ -139,30 +147,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 const { value, done } = await reader.read();
                 if (done) break;
                 buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const payload = line.slice(6);
-                        try {
-                            const obj = JSON.parse(payload);
-                            if (obj.done) {
-                                streamMsg.finalize(obj.is_emergency || false);
-                                break;
-                            }
-                        } catch (_) {
-                            streamMsg.appendText(payload + '\n');
+                // Parse SSE by event blocks separated by a blank line.
+                const events = buffer.split('\n\n');
+                buffer = events.pop() || '';
+
+                for (const evt of events) {
+                    // Support multi-line `data:` fields by joining them with '\n'
+                    const dataLines = evt
+                        .split('\n')
+                        .filter(l => l.startsWith('data:'))
+                        .map(l => l.replace(/^data:\s?/, ''));
+                    if (!dataLines.length) continue;
+
+                    const payload = dataLines.join('\n');
+                    try {
+                        const obj = JSON.parse(payload);
+                        if (obj.done) {
+                            streamMsg.finalize(obj.is_emergency || false);
+                            continue;
+                        }
+                        if (typeof obj.delta === 'string' && obj.delta.length) {
+                            streamMsg.appendText(obj.delta);
                             if (firstChunk) {
                                 firstChunk = false;
                                 if (loadingModalInstance) loadingModalInstance.hide();
                             }
                         }
+                    } catch (_) {
+                        // Fallback: treat as plain text
+                        streamMsg.appendText(payload);
+                        if (firstChunk) {
+                            firstChunk = false;
+                            if (loadingModalInstance) loadingModalInstance.hide();
+                        }
                     }
                 }
             }
         } catch (err) {
-            addAssistantMessage('Unable to connect. Please check your connection and try again.', false);
+            const msg = (err && err.name === 'AbortError')
+                ? 'This is taking too long. Please try again (or check your API key / connection).'
+                : 'Unable to connect. Please check your connection and try again.';
+            addAssistantMessage(msg, false);
         } finally {
+            clearTimeout(timeoutId);
             sendBtn.disabled = false;
             if (loadingModalInstance) loadingModalInstance.hide();
         }
